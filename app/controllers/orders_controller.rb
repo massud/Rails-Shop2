@@ -28,7 +28,6 @@ class OrdersController < ApplicationController
     @order.buyer_id = current_user.id
     @order.seller_id = @seller.id
 
-    require "stripe"
     Stripe.api_key = ENV["STRIPE_API_KEY"]
     token = params[:stripeToken]
 
@@ -49,12 +48,12 @@ class OrdersController < ApplicationController
       :recipient => @seller.recipient
       )
 
-     respond_to do |format|
+    respond_to do |format|
       if @order.save
         format.html { redirect_to root_url }
-        format.json { render action: 'show', status: :created, location: @order }
+        format.json { render :show, status: :created, location: @order }
       else
-        format.html { render action: 'new' }
+        format.html { render :new }
         format.json { render json: @order.errors, status: :unprocessable_entity }
       end
     end
